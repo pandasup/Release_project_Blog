@@ -1,0 +1,10 @@
+<h1>Видалити «{{ object.name }}»?</h1>
+<p>
+  Пов'язаних статей: {{ object.articles.count }}.
+  Самі статті не видаляться, вони лише втратять цей зв'язок.
+</p>
+<form method="post">
+  {% csrf_token %}
+  <button type="submit">Так, видалити</button>
+  <a href="{{ view.success_url }}">Скасувати</a>
+</form>

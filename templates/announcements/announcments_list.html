@@ -1,0 +1,18 @@
+<h1>Оголошення</h1>
+{% if user.is_authenticated and user.is_blog_admin %}
+  <a href="{% url 'announcements:create' %}">Додати оголошення</a>
+{% endif %}
+
+{% for a in announcements %}
+  <article>
+    <h2>{{ a.title }}{% if not a.is_active %} <small>(приховано)</small>{% endif %}</h2>
+    <p>{{ a.content|linebreaksbr }}</p>
+    <small>{{ a.created_at|date:"d.m.Y H:i" }}</small>
+    {% if user.is_authenticated and user.is_blog_admin %}
+      <a href="{% url 'announcements:update' a.pk %}">Редагувати</a>
+      <a href="{% url 'announcements:delete' a.pk %}">Видалити</a>
+    {% endif %}
+  </article>
+{% empty %}
+  <p>Оголошень поки немає.</p>
+{% endfor %}

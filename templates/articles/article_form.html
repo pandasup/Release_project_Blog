@@ -1,0 +1,22 @@
+<h1>{% if object %}Редагування статті{% else %}Нова стаття{% endif %}</h1>
+
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.as_p }}
+
+  <h2>Фото та відео</h2>
+  {{ media_formset.management_form }}
+  {{ media_formset.non_form_errors }}
+
+  {% for f in media_formset %}
+    <div>
+      {{ f.non_field_errors }}
+      {% if f.instance.pk and f.instance.media_type == 'image' %}
+        <img src="{{ f.instance.file.url }}" width="120" alt="">
+      {% endif %}
+      {{ f.as_p }}
+    </div>
+  {% endfor %}
+
+  <button type="submit">Зберегти</button>
+</form>

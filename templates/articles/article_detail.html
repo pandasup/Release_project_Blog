@@ -1,0 +1,13 @@
+{% for m in article.media.all %}
+  <figure>
+    {% if m.media_type == 'image' %}
+      <img src="{{ m.file.url }}" alt="{{ m.caption|default:article.title }}" style="max-width:100%">
+    {% else %}
+      <video controls style="max-width:100%">
+        <source src="{{ m.file.url }}">
+        Ваш браузер не підтримує відео.
+      </video>
+    {% endif %}
+    {% if m.caption %}<figcaption>{{ m.caption }}</figcaption>{% endif %}
+  </figure>
+{% endfor %}

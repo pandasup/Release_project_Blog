@@ -1,0 +1,20 @@
+<h1>{{ view.list_title }}</h1>
+
+{% if user.is_authenticated and user.is_blog_admin %}
+  <a href="{% url view.create_url %}">Додати</a>
+{% endif %}
+
+<ul>
+  {% for item in object_list %}
+    <li>
+      <a href="{% url view.filter_url item.slug %}">{{ item.name }}</a>
+      ({{ item.articles_count }})
+      {% if user.is_authenticated and user.is_blog_admin %}
+        <a href="{% url view.update_url item.pk %}">Редагувати</a>
+        <a href="{% url view.delete_url item.pk %}">Видалити</a>
+      {% endif %}
+    </li>
+  {% empty %}
+    <li>Поки що порожньо.</li>
+  {% endfor %}
+</ul>

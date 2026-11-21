@@ -1,0 +1,62 @@
+<div style="display:flex; gap:2rem">
+  <main style="flex:3">
+    <h1>Останні статті</h1>
+
+    {% for article in articles %}
+      <article>
+        <h2><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></h2>
+        <small>
+          {{ article.author.username }} · {{ article.published_at|date:"d.m.Y" }}
+          {% if article.category %}
+            · <a href="{% url 'articles:by_category' article.category.slug %}">{{ article.category.name }}</a>
+          {% endif %}
+          {% if article.avg_rating %}
+            · ★ {{ article.avg_rating|floatformat:1 }} ({{ article.ratings_count }})
+          {% endif %}
+        </small>
+        <p>{{ article.content|truncatewords:40 }}</p>
+      </article>
+    {% empty %}
+      <p>Статей поки немає.</p>
+    {% endfor %}
+
+    {% if is_paginated %}
+      <nav>
+        {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}">← Назад</a>
+        {% endif %}
+        <span>{{ page_obj.number }} / {{ paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}">Далі →</a>
+        {% endif %}
+      </nav>
+    {% endif %}
+  </main>
+
+  <aside style="flex:1">
+    <h3>Популярні статті</h3>
+    <ol>
+      {% for a in popular_articles %}
+        <li><a href="{{ a.get_absolute_url }}">{{ a.title }}</a> ({{ a.views_count }})</li>
+      {% empty %}
+        <li>Поки що немає.</li>
+      {% endfor %}
+    </ol>
+
+    <h3>Категорії</h3>
+    <ul>
+      {% for c in categories %}
+        <li><a href="{% url 'articles:by_category' c.slug %}">{{ c.name }}</a> ({{ c.articles_count }})</li>
+      {% endfor %}
+    </ul>
+    <a href="{% url 'articles:categories' %}">Усі категорії</a>
+
+    <h3>Теги</h3>
+    <p>
+      {% for t in tags %}
+        <a href="{% url 'articles:by_tag' t.slug %}">#{{ t.name }}</a>
+      {% endfor %}
+    </p>
+    <a href="{% url 'articles:tags' %}">Усі теги</a>
+  </aside>
+</div>

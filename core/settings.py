@@ -11,10 +11,29 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
+import os
 
+EMAIL_USER = os.environ.get('EMAIL_HOST_USER', '')
+
+MAILERS = {
+    "default": {
+        "BACKEND": "django.core.mail.backends.smtp.EmailBackend",
+        "OPTIONS": {
+            "host": "smtp.gmail.com",
+            "use_tls": True,
+            "username": EMAIL_USER,
+            "password": os.environ.get('EMAIL_HOST_PASSWORD', ''),
+        },
+    },
+}
+
+DEFAULT_FROM_EMAIL = EMAIL_USER
+LOGIN_REDIRECT_URL = 'main:home'
+LOGOUT_REDIRECT_URL = 'main:home'
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+load_dotenv(BASE_DIR / '.env')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
@@ -37,11 +56,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'blog',
+    'articles',
     'authentication',
+    'comments',
+    'subscriptions',
+    'announcements',
+    'main',
 ]
 
 AUTH_USER_MODEL = 'authentication.CustomUser'
+LOGIN_URL = 'authentication:login'
+LOGIN_REDIRECT_URL = 'articles:list'
+LOGOUT_REDIRECT_URL = 'articles:list'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -58,13 +84,14 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'announcements.context_processors.latest_announcements',
             ],
         },
     },
@@ -120,8 +147,13 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 # Email
+
+SITE_URL = 'http://127.0.0.1:8000'
+DEFAULT_FROM_EMAIL = 'Блог <noreply@example.com>'
+
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
 MAILERS = {
