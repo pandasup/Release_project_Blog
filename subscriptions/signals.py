@@ -11,4 +11,9 @@ from .emails import notify_subscribers
 @receiver(post_save, sender=Article)
 def article_published(sender, instance, **kwargs):
     if instance.status == Article.Status.PUBLISHED and not instance.subscribers_notified:
-        transaction.on_commit(lambda: notify_subscribers(instance.pk))
+
+        def _notify():
+            if notify_subscribers(instance.pk):
+                instance.subscribers_notified = True  # синхронізуємо об'єкт у пам'яті
+
+        transaction.on_commit(_notify)

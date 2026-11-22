@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ author.get_full_name|default:author.username }}{% endblock %}
+{% block meta_description %}Статті автора {{ author.get_full_name|default:author.username }}{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+  <div class="card-body d-flex align-items-center gap-3">
+    {% if author.avatar %}
+      <img src="{{ author.avatar.url }}" alt="{{ author.username }}"
+           class="rounded-circle" width="96" height="96" style="object-fit: cover;">
+    {% else %}
+      <i class="bi bi-person-circle text-secondary" style="font-size: 5rem;"></i>
+    {% endif %}
+
+    <div>
+      <h1 class="h3 mb-1">{{ author.get_full_name|default:author.username }}</h1>
+      <p class="text-body-secondary mb-1">
+        @{{ author.username }}
+        <span class="badge text-bg-secondary ms-1">{{ author.get_role_display }}</span>
+      </p>
+      <p class="text-body-secondary small mb-0">
+        <i class="bi bi-calendar3"></i> На сайті з {{ author.date_joined|date:"d.m.Y" }}
+      </p>
+    </div>
+  </div>
+
+  {% if author.bio %}
+    <div class="card-body border-top">
+      {{ author.bio|linebreaksbr }}
+    </div>
+  {% endif %}
+</div>
+
+<h2 class="h4 mb-3">Статті автора ({{ articles|length }})</h2>
+
+{% for article in articles %}
+  <div class="card mb-3">
+    <div class="card-body">
+      <h3 class="h5 card-title mb-1">
+        <a href="{{ article.get_absolute_url }}" class="text-decoration-none">{{ article.title }}</a>
+      </h3>
+      <p class="text-body-secondary small mb-0">
+        <i class="bi bi-folder"></i> {{ article.category.name }}
+        · <i class="bi bi-clock"></i> {{ article.created_at|date:"d.m.Y" }}
+      </p>
+    </div>
+  </div>
+{% empty %}
+  <p class="text-body-secondary">Опублікованих статей поки немає.</p>
+{% endfor %}
+{% endblock %}

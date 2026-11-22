@@ -12,12 +12,12 @@ logger = logging.getLogger(__name__)
 
 
 def notify_subscribers(article_pk):
-    # Атомарно «забираємо» статтю: другий паралельний виклик нічого не знайде
+    """Повертає True, якщо розсилку «забрав» саме цей виклик."""
     claimed = Article.objects.filter(
         pk=article_pk, subscribers_notified=False
     ).update(subscribers_notified=True)
     if not claimed:
-        return
+        return False
 
     article = Article.objects.select_related('author').get(pk=article_pk)
     subscriptions = (
@@ -44,9 +44,9 @@ def notify_subscribers(article_pk):
         )
         for sub in subscriptions
     )
-    if not mails:
-        return
-    try:
-        send_mass_mail(mails)
-    except Exception:
-        logger.exception('Не вдалося розіслати листи про статтю %s', article_pk)
+    if mails:
+        try:
+            send_mass_mail(mails)
+        except Exception:
+            logger.exception('Не вдалося розіслати листи про статтю %s', article_pk)
+    return True
