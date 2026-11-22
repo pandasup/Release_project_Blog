@@ -50,11 +50,11 @@ class TaxonomyForm(forms.ModelForm):
 
     def clean_name(self):
         name = self.cleaned_data['name'].strip()
-        duplicates = (
-            self._meta.model.objects.filter(name__iexact=name)
-            .exclude(pk=self.instance.pk)
-        )
-        if duplicates.exists():
+        qs = self._meta.model.objects.all()
+        if self.instance.pk:
+            qs = qs.exclude(pk=self.instance.pk)
+        existing = {n.casefold() for n in qs.values_list('name', flat=True)}
+        if name.casefold() in existing:
             raise forms.ValidationError('Така назва вже існує.')
         return name
 
@@ -74,11 +74,14 @@ class CategoryForm(TaxonomyForm):
         labels = {'name': 'Назва категорії'}
 
 
+
 class TagForm(TaxonomyForm):
     class Meta:
         model = Tag
         fields = ('name',)
         labels = {'name': 'Назва тега'}
+
+
     
 IMAGE_EXTENSIONS = {'jpg', 'jpeg', 'png', 'gif', 'webp'}
 VIDEO_EXTENSIONS = {'mp4', 'webm', 'ogg'}
