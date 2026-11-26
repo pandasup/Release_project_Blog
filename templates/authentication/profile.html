@@ -4,4 +4,3 @@
 {% if user.avatar %}<img src="{{ user.avatar.url }}" width="120" alt="Аватар">{% endif %}
 <p>{{ user.bio }}</p>
 <a href="{% url 'authentication:profile_edit' %}">Редагувати профіль</a>
-<a href="{% url 'authentication:password_change' %}">Змінити пароль</a>

@@ -59,10 +59,10 @@ class ArticleListView(ListView):
             .select_related('author', 'category')
             .prefetch_related('tags')
             .annotate(
-                average_rating=Avg('ratings__value'), 
-                rating_count=Count('ratings', distinct=True)
-                
+                avg_rating=Avg('ratings__value'),                 # було average_rating
+                ratings_count=Count('ratings', distinct=True),
             )
+            .order_by('-published_at', '-created_at')
         )
         if category := self.kwargs.get('category_slug'):
             qs = qs.filter(category__slug=category)

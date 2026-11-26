@@ -1,3 +1,6 @@
+{% extends 'base.html' %}
+
+{% block content %}
 <div style="display:flex; gap:2rem">
   <main style="flex:3">
     <h1>Останні статті</h1>
@@ -60,3 +63,4 @@
     <a href="{% url 'articles:tags' %}">Усі теги</a>
   </aside>
 </div>
+{% endblock %}
