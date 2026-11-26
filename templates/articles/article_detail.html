@@ -1,8 +1,8 @@
 {% for m in article.media.all %}
-  <figure class="mb-3" style="max-width: 640px;">
+  <figure class="mb-3" style="max-width: 100%;">
     <div class="ratio ratio-16x9 bg-light rounded overflow-hidden">
       {% if m.media_type == 'image' %}
-        <img src="{{ m.file.url }}" class="object-fit-contain"
+        <img src="{{ m.file.url }}" class="object-fit-contain" style="max-width: 100%; max-height: 250px;"
              alt="{{ m.caption|default:article.title }}" loading="lazy">
       {% else %}
         <video controls preload="metadata" class="object-fit-contain">
@@ -16,3 +16,4 @@
     {% endif %}
   </figure>
 {% endfor %}
+<button class="btn btn-outline-secondary" onclick="window.history.back()">Назад</button>

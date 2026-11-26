@@ -1,3 +1,6 @@
+{% extends 'base.html' %}
+
+{% block content %}
 <h1>Оголошення</h1>
 {% if user.is_authenticated and user.is_blog_admin %}
   <a href="{% url 'announcements:create' %}">Додати оголошення</a>
@@ -16,3 +19,4 @@
 {% empty %}
   <p>Оголошень поки немає.</p>
 {% endfor %}
+{% endblock %}
